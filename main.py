@@ -1,51 +1,10 @@
 #!/usr/bin/python3
-#created by Everett
-#MESS around with this this stuff:
-#————————————————————————————
-#Presets: ["None", "Everett's", "Limited Resources", "my favorite"]
-Preset = "None"
-#how many generations are simulated
-generations = 50
-#how many fruits are produced by a plant:
-fruitsPerPlant = 2
-#the number of seeds in a fruit:
-SeedsPerFruit = 1
-# chance of seeds sucsessfully creating a plant
-SeedSurvivalRate = 1 #must be between 0 and 1
-#how many plants are there in the beginning:
-PlantsAtTheBeginning = 1
-
-
-smoothing = True #looks nicer if True but can be misleading
-
-
-#here put the amout of plants that the area can house. if the number goes over then some will die.
-NumberOfPlantsBeforeDeath = 10000 #0 = disabled
-DeathChance = 1 #chance of death if maximum occupancy is exceeded
-
-randomization = False #adds some random chance to seed survival and death chance.
-
-SmoothNearLimit = True 
-
-#————————————————————————————
-#MESS WITH THE NUMBERS ABOVE^ 
-#ONCE UR DONE PRESS THE GREEN BUTTON AT THE TOP THAT SAYS RUN
-#       /|\
-#      / | \
-#     /  |  \
-#    /   |   \
-#        | 
-#        |
-#        |
-#        |
-
-
-
-
-
-
-
-
+config = open("config.txt", 'r')
+ConfigValuePlaces = [5,9,12,15,19,23,26,31,35,39,43]
+configSplit = config.read().split("\n")
+for i in ConfigValuePlaces:
+  print(configSplit[i])
+exit()
 
 
 #---------------------------------------
