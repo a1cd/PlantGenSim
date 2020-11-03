@@ -2,40 +2,45 @@
 #created by Everett
 #MESS around with this this stuff:
 #————————————————————————————
+#Presets: ["None", "Everett's", "Limited Resources", "my favorite"]
+Preset = "None"
 #how many generations are simulated
-generations = 10
+generations = 250
 #how many fruits are produced by a plant:
 fruitsPerPlant = 2
 #the number of seeds in a fruit:
-SeedsPerFruit = 2
+SeedsPerFruit = 1
 # chance of seeds sucsessfully creating a plant
-SeedSurvivalRate = 1.0 #must be between 0 and 1
+SeedSurvivalRate = 1 #must be between 0 and 1
 #how many plants are there in the beginning:
-PlantsAtTheBeginning = 1 
+PlantsAtTheBeginning = 1
 
-#——>> [ xkcd MODE!!!! ] <<––
-xkcd = False
-#————————————————————————————
-#MORE ADVANCED FEATURES :) (not finished so they dont work)
-#————————————————————————————
-#if you want to use them set this to "adv = True"
-adv = False
-# all of the following is ignored if the above is not True
-randomization = False #adds some random chance to seed survival and death chance.
+
+smoothing = False #looks nicer if True but can be misleading
+
+
 #here put the amout of plants that the area can house. if the number goes over then some will die.
-NumberOfPlantsBeforeDeath = 10000 #0 means limitless
-DeathChance = 0.5 #chance of death if maximum occupancy is exceeded
+NumberOfPlantsBeforeDeath = 10000 #0 = disabled
+DeathChance = 1 #chance of death if maximum occupancy is exceeded
+
+randomization = False #adds some random chance to seed survival and death chance.
+
+SmoothNearLimit = True
+
 #————————————————————————————
 #MESS WITH THE NUMBERS ABOVE^ 
 #ONCE UR DONE PRESS THE GREEN BUTTON AT THE TOP THAT SAYS RUN
-#    /|\
-#  /  | \
-# /   |  \
-#/    |   \
-#     | 
-#     |
-#     |
-#     |
+#       /|\
+#      / | \
+#     /  |  \
+#    /   |   \
+#        | 
+#        |
+#        |
+#        |
+
+
+
 
 
 
@@ -47,50 +52,88 @@ DeathChance = 0.5 #chance of death if maximum occupancy is exceeded
 #dont change this stuff:
 
 #imports
-import matplotlib
+import matplotlib, random
 from matplotlib import pyplot
 from scipy import interpolate
 import numpy as np
-import os
-os.system('cls' if os.name == 'nt' else 'clear')
 
-if xkcd == True:
-    pyplot.xkcd()
+#Loading Presets
+["None", "Everett's", "Limited Resources"]
+if Preset.lower() == "none":
+    None == None
+elif Preset.lower() == "Everett's":
+    None == None
+elif Preset.lower() == "Limited Resources":
+    None == None
+else:
+    Exception("invalid preset")
 
-PlantsInGen = PlantsAtTheBeginning
+
 #defining some variables
+PlantsInGen = PlantsAtTheBeginning
 TotalFruits = 0
 TotalSeeds = 0
 plantsovertime = []
 #the math that calculates the numbers
 for i in range(generations):
-    TotalFruits = PlantsInGen * fruitsPerPlant
-    TotalSeeds = TotalFruits * SeedsPerFruit
-    PlantsInGen = TotalSeeds * SeedSurvivalRate
-    plantsovertime.append(PlantsInGen)
+    if PlantsInGen > NumberOfPlantsBeforeDeath:
+        if NumberOfPlantsBeforeDeath == 0:
+            TotalFruits = PlantsInGen * fruitsPerPlant
+            TotalSeeds = TotalFruits * SeedsPerFruit
+            PlantsInGen = TotalSeeds * SeedSurvivalRate
+            plantsovertime.append(PlantsInGen)
+        else:
+            #generation is too big
+            PlantsInGen = PlantsInGen - (int(PlantsInGen - NumberOfPlantsBeforeDeath) *2) * DeathChance
+            plantsovertime.append(PlantsInGen)
+    else:
+        TotalFruits = PlantsInGen * fruitsPerPlant
+        TotalSeeds = TotalFruits * SeedsPerFruit
+        PlantsInGen = TotalSeeds * SeedSurvivalRate
+        plantsovertime.append(PlantsInGen)
+    if PlantsInGen < 0:
+        print("Simulation dead: all plants died")
+        generations = i + 1
+        plantsovertime[i] = 0
+        TotalFruits = 0
+        TotalSeeds = 0
+        break
+    if randomization == True:
+        PlantsInGen = PlantsInGen + int(random.random()*2)
 from pylab import *
 import numpy as np
 
 
-t = arange(0.0, float(generations), 1)
-for i in plantsovertime:
-  print(i)
-s = np.array(plantsovertime)
 
-x_new = np.linspace(1, float(generations), 300)
-a_BSpline = interpolate.make_interp_spline(t, s)
-y_new = a_BSpline(x_new)
+if smoothing == True:
+    #prevent smoothing prediction drops
+    t = arange(0.0, float(generations+1), 1)
+    plantsovertime.append(plantsovertime[generations-1])
+    print(plantsovertime)
+    print(t)
+    s = np.array(plantsovertime)
+    #smooth lines
+    x_new = np.linspace(1, float(generations), 300)
+    a_BSpline = interpolate.make_interp_spline(t, s)
+    y_new = a_BSpline(x_new)
+    #plot graph
+    plt.plot(x_new, y_new)
+else:
+    t = arange(0.0, float(generations), 1)
+    print(plantsovertime)
+    print(t)
+    s = np.array(plantsovertime)
+    plot(t, s)#plot
+if not(NumberOfPlantsBeforeDeath == 0):
+    dline = [NumberOfPlantsBeforeDeath, NumberOfPlantsBeforeDeath]
+    dlinetime = [0, generations]
+    plot(dlinetime, dline, color='r')
 
-plt.plot(x_new, y_new)
 
+minorticks_on()
 
 xlabel('Time')
 ylabel('Plants')
 title('Plants over time')
 grid(True)
-savefig("line_chart.png")
-print("if you want a better version, message me.")
-print("I can send you an app verion that you can")
-print("run on your computer.")
-print("")
 show()
