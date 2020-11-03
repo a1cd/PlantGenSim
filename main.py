@@ -5,7 +5,7 @@
 #Presets: ["None", "Everett's", "Limited Resources", "my favorite"]
 Preset = "None"
 #how many generations are simulated
-generations = 250
+generations = 50
 #how many fruits are produced by a plant:
 fruitsPerPlant = 2
 #the number of seeds in a fruit:
@@ -16,7 +16,7 @@ SeedSurvivalRate = 1 #must be between 0 and 1
 PlantsAtTheBeginning = 1
 
 
-smoothing = False #looks nicer if True but can be misleading
+smoothing = True #looks nicer if True but can be misleading
 
 
 #here put the amout of plants that the area can house. if the number goes over then some will die.
@@ -25,7 +25,7 @@ DeathChance = 1 #chance of death if maximum occupancy is exceeded
 
 randomization = False #adds some random chance to seed survival and death chance.
 
-SmoothNearLimit = True
+SmoothNearLimit = True 
 
 #————————————————————————————
 #MESS WITH THE NUMBERS ABOVE^ 
